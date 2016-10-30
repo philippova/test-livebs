@@ -1,0 +1,68 @@
+<template ngbModalContainer #content let-c="close" let-d="dismiss" >
+  <div class="modal-header">
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title win_title">{{movie_details?.title}} - <span *ngIf="movie_details?.release_date">{{movie_details?.release_date | date:'yyyy'}}</span></h4>
+  </div>
+  <div class="modal-body">
+  	<table class="table table-hover">
+  		<tr>
+  			<td class="noborder">{{langString('genres')}}</td><td class="noborder"><span *ngFor="let i of movie_details?.genres; let is_last=last;">{{i.name}}<span *ngIf="!is_last">, </span></span></td>
+  		</tr>
+  		<tr>
+  			<td>{{langString('budget')}}</td><td>{{movie_details?.budget| currency:'USD':true}}</td>
+  		</tr>
+  		<tr>
+  			<td>{{langString('overview')}}</td><td>{{movie_details?.overview}}</td>
+  		</tr>
+  		<tr>
+  			<td colspan=2>
+  				<span  *ngFor="let c of movie_casts?.cast; let j = index; let is_first = first">
+  				<div *ngIf="c.profile_path && j<5" class="person">
+				<img class="resize img-circle" src="{{img_path}}{{c.profile_path}}">
+  				<div>{{c.name}}</div>
+  				</div>
+				</span>
+  			</td>
+  		</tr>
+  	</table>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="c('Close click')">{{langString('close')}}</button>
+  </div>
+</template>
+
+<div class="myapp">
+	<h1>{{langString('Search Movie')}}</h1>
+	<form class="myform">
+		<div class="row">
+  			<div class="col-xs-12 col-sm-6 col-md-8">
+  				<input class="form-control" type="text" [(ngModel)]="search_term" name="search_term" [placeholder]="langString('search')" (keyup)="getMovies()"><button *ngIf="search_term" type="button" class="close clear_search" aria-label="Close" (click)="search_term = ''; getMovies();" title="{{langString('clear search')}}">
+      			<span aria-hidden="true">&times;</span></button>
+      		</div>
+  			<div class="col-xs-6 col-md-4">
+  				<select class="form-control" [(ngModel)]="lang" name="lang" (change)="lang = $event.target.value; getMovies();">
+					<option *ngFor="let c of available_languages" [value]="c.id">{{c.name}}</option>
+				</select>
+			</div>
+		</div>
+	</form>
+	<span  *ngFor="let movie of movies; let j = index; let is_first = first">
+		<div *ngIf="j%4 == 0 && !is_first" class="row separate"></div>
+  			<div class="col-xs-3">
+  				<div class="col-xs-12 col-sm-6 col-md-8"><img class="img-rounded clickable" src="{{img_path}}{{movie.poster_path}}" (click)="open(content,movie.id)"></div>
+  						
+  						<div class="col-xs-6 col-md-4">
+  							<div>{{movie.title}}
+  							<em *ngIf="movie.release_date"> ({{movie.release_date | date:'yyyy'}})</em>
+  							</div>
+  						</div>
+  					
+  			</div>
+	</span>
+	<div class="row"></div>
+	<div class="centered" *ngIf="total_pages > 1">
+		<ngb-pagination [rotate]="true" [boundaryLinks]="true" [collectionSize]="total_results" [pageSize]="page_size" [maxSize]="10" [(page)]="currentPage" (pageChange)="getMovies()"></ngb-pagination>
+	</div>
+</div>

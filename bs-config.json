@@ -1,0 +1,13 @@
+{
+	"port":3000,
+"open": false,
+"notify": false,
+"ui": false,
+"ghostMode": false,
+"logLevel": "silent",
+"injectChanges": true,
+"debugInfo": false,
+"watchOptions": { "ignored": "node_modules" },
+"logFileChanges": false,
+"logSnippet": false
+}
